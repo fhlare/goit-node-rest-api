@@ -12,6 +12,7 @@ const {validateBody} = require("../helpers/validateBody.js");
 const {isValidId} = require("../helpers/isValidId.js");
 
 const {
+  updateContactSchema,
   createContactSchema,
   updateFavoriteSchema,
 } = require("../schemas/contactsSchemas.js");
@@ -26,7 +27,7 @@ contactsRouter.delete("/:id", isValidId, deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
-contactsRouter.put("/:id", validateBody(createContactSchema), updateContact);
+contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
 contactsRouter.patch(
   "/:id/favorite",
   isValidId,
