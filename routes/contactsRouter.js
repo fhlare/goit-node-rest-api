@@ -8,8 +8,9 @@ const {
   updateStatusContact,
 } = require("../controllers/contactsControllers.js");
 
-const {validateBody} = require("../helpers/validateBody.js");
-const {isValidId} = require("../helpers/isValidId.js");
+const {validateBody} = require("../middlewares/validateBody.js");
+const { isValidId } = require("../middlewares/isValidId.js");
+const authMiddleware = require("../middlewares/authMiddleware.js");
 
 const {
   updateContactSchema,
@@ -19,17 +20,18 @@ const {
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/",authMiddleware, getAllContacts);
 
-contactsRouter.get("/:id", isValidId, getOneContact);
+contactsRouter.get("/:id",authMiddleware, isValidId, getOneContact);
 
-contactsRouter.delete("/:id", isValidId, deleteContact);
+contactsRouter.delete("/:id",authMiddleware, isValidId, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post("/",authMiddleware, validateBody(createContactSchema), createContact);
 
-contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
+contactsRouter.put("/:id", authMiddleware, validateBody(updateContactSchema), updateContact);
+
 contactsRouter.patch(
-  "/:id/favorite",
+  "/:id/favorite",authMiddleware,
   isValidId,
   validateBody(updateFavoriteSchema),
   updateStatusContact

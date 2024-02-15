@@ -1,17 +1,29 @@
-const {HttpError} = require("../helpers/HttpError");
+const { HttpError } = require("../helpers/HttpError");
 const { ctrlWrapper } = require("../helpers/ctrlWrapper.js");
 
 const Contact = require("../models/contacts");
 
 const getAllContacts = async (req, res) => {
-  const result = await Contact.find();
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 10, favorite } = req.query;
+  const favoriteFilter = { owner };
+  if (favorite) {
+    favoriteFilter.favorite = favorite;
+  }
+
+  const skip = (page - 1) * limit;
+
+  const result = await Contact.find(favoriteFilter, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email");
   res.json(result);
 };
 
 const getOneContact = async (req, res) => {
-  const { id } = req.params;
-
-  const result = await Contact.findById(id);
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+  const result = await Contact.findById({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -19,9 +31,10 @@ const getOneContact = async (req, res) => {
 };
 
 const deleteContact = async (req, res) => {
-  const { id } = req.params;
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
 
-  const result = await Contact.findByIdAndDelete(id);
+  const result = await Contact.findByIdAndDelete({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -29,14 +42,16 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const { name, email, phone } = req.body;
-  const result = await Contact.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contact.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
-  const { id } = req.params;
-  const result = await Contact.findByIdAndUpdate(id, req.body, {
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
+
+  const result = await Contact.findByIdAndUpdate({ _id, owner }, req.body, {
     new: true,
   });
   if (!result) {
@@ -46,9 +61,10 @@ const updateContact = async (req, res) => {
 };
 
 const updateStatusContact = async (req, res) => {
-  const { id } = req.params;
+  const { id: _id } = req.params;
+  const { _id: owner } = req.user;
 
-  const result = await Contact.findByIdAndUpdate(id, req.body, {
+  const result = await Contact.findByIdAndUpdate({ _id, owner }, req.body, {
     new: true,
   });
   if (!result) {
