@@ -10,7 +10,7 @@ const {
 
 const {validateBody} = require("../middlewares/validateBody.js");
 const { isValidId } = require("../middlewares/isValidId.js");
-const authMiddleware = require("../middlewares/authMiddleware.js");
+const { authMiddleware } = require("../middlewares/authMiddleware.js");
 
 const {
   updateContactSchema,

@@ -3,7 +3,7 @@ const { ctrlWrapper } = require("../helpers/ctrlWrapper.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const User = require('../models/user.js');
+const {User} = require('../models/user.js');
 
 
 const dotenv = require("dotenv");

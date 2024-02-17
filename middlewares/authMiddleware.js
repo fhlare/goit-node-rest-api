@@ -1,5 +1,5 @@
 const { HttpError } = require("../helpers/HttpError");
-const User = require("../models/user");
+const {User} = require("../models/user");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -32,4 +32,6 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+module.exports = {
+  authMiddleware,
+};

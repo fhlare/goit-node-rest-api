@@ -1,7 +1,7 @@
 const { HttpError } = require("../helpers/HttpError");
 const { ctrlWrapper } = require("../helpers/ctrlWrapper.js");
 
-const Contact = require("../models/contacts");
+const { Contact } = require("../models/contacts");
 
 const getAllContacts = async (req, res) => {
   const { _id: owner } = req.user;
@@ -23,7 +23,7 @@ const getAllContacts = async (req, res) => {
 const getOneContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
-  const result = await Contact.findById({ _id, owner });
+  const result = await Contact.findOne({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -34,7 +34,7 @@ const deleteContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
 
-  const result = await Contact.findByIdAndDelete({ _id, owner });
+  const result = await Contact.findOneAndDelete({ _id, owner });
   if (!result) {
     throw HttpError(404);
   }
@@ -51,7 +51,7 @@ const updateContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
 
-  const result = await Contact.findByIdAndUpdate({ _id, owner }, req.body, {
+  const result = await Contact.findOneAndUpdate({ _id, owner }, req.body, {
     new: true,
   });
   if (!result) {
@@ -64,7 +64,7 @@ const updateStatusContact = async (req, res) => {
   const { id: _id } = req.params;
   const { _id: owner } = req.user;
 
-  const result = await Contact.findByIdAndUpdate({ _id, owner }, req.body, {
+  const result = await Contact.findOneAndUpdate({ _id, owner }, req.body, {
     new: true,
   });
   if (!result) {
